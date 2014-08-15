@@ -25,7 +25,7 @@ def ubuntu_builder_with_valid_settings(ubuntu_builder):
                 exclude=['*pyc'],
                 build_dependencies=['libpq-dev'],
                 dependencies=['libpq'],
-                before_install=[],
+                before_install=['./scripts/before_install'],
                 after_install=[],
                 before_remove=[],
                 after_remove=[],
@@ -34,7 +34,10 @@ def ubuntu_builder_with_valid_settings(ubuntu_builder):
 
                     ),
                     depot=dict(
-
+                        destination='s3://apt.vandelay.io',
+                        gpg_key='277E7787',
+                        component='unstable',
+                        codename='lucid'
                     )
                 ),
                 notifications=dict(
@@ -42,6 +45,24 @@ def ubuntu_builder_with_valid_settings(ubuntu_builder):
                         room_id='dev',
                         on=['success', 'failure']
                     )
+                ),
+            )
+        )
+    )
+    with mock.patch.object(UbuntuBuilder, 'settings') as settings:
+        settings.__get__ = mock.Mock(return_value=valid_settings)
+        yield ubuntu_builder
+
+
+@pytest.yield_fixture
+def ubuntu_builder_with_min_settings(ubuntu_builder):
+    valid_settings = dict(
+        version=1,
+        targets=dict(
+            ubuntu=dict(
+                destinations=dict(
+                ),
+                notifications=dict(
                 ),
             )
         )
@@ -72,3 +93,6 @@ class TestUbuntuBuilder(object):
     ):
         with pytest.raises(bob.builders.InvalidSettingsVersion):
             ubuntu_builder_with_invalid_settings.parse_options()
+
+    def test_load_mininal(self, ubuntu_builder_with_min_settings):
+        ubuntu_builder_with_min_settings.parse_options()

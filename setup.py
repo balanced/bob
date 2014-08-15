@@ -33,6 +33,7 @@ requires = [
     'boto>=2.3.0,<2.4',
     'hipchat',
     'configobj',
+    'pilo>=0.3.8,<0.4',
 ]
 
 extras_require = {

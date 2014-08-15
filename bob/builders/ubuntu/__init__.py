@@ -4,6 +4,7 @@ import logging
 import os
 
 from bob.builders import Builder, GithubMixin
+from . import forms
 
 
 logger = logging.getLogger(__name__)
@@ -33,13 +34,8 @@ class UbuntuBuilder(Builder, GithubMixin):
 
     def _parse_options_v1(self):
         settings = self.settings
-        wanted_info = [
-            'dependencies', 'build_dependencies', 'before_install',
-            'after_install', 'before_remove', 'after_remove', 'exclude',
-            'destinations', 'notifications',
-        ]
-        for key in wanted_info:
-            value = settings['targets'][self.flavor].get(key, None)
+        result = forms.V1Settings(**settings)
+        for key, value in result['targets'][self.flavor].iteritems():
             setattr(self, key, value)
             logger.info(key)
             logger.info(value)
