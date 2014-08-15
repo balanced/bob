@@ -1,0 +1,12 @@
+language: python
+python:
+- 2.7
+install:
+- pip install "blumpkin>=0.4,<0.5"
+- pip install -e .[tests]
+- python setup.py develop
+script:
+- blumpkin test --cov=bob --cov-report term-missing xml .
+- blumpkin coverage coverage.xml bob.builders:70
+after_success:
+- find thed -name "*.py" | xargs pep8 --ignore=E711 | tee pep8.out

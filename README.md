@@ -1,5 +1,6 @@
 #BOB the buildah
 
+[![Build Status](https://travis-ci.org/balanced/bob.svg)](https://travis-ci.org/balanced/bob)
 ![Alt text](http://i49.photobucket.com/albums/f265/jsh00ter12/jfkl.jpg)
 
 Builds debian packages via fpm and pip.
