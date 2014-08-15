@@ -10,6 +10,8 @@ from bob.builders.ubuntu import UbuntuBuilder
 
 def build(github_organization, github_repo, commit_hash_or_tag):
     from bob.api import settings
+
+    # HACK: until we figure out settings.ini
     settings = settings or {}
     working_dir = settings.get('working_dir', '~/work')
     output_dir = settings.get('output_dir', '~/out')
