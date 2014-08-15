@@ -50,7 +50,10 @@ class Builder(object):
 
     notifications = None
 
-    def __init__(self, project_name, working_dir, output_dir, tmp_dir=None):
+    logger = None
+
+    def __init__(self, project_name, working_dir, output_dir, tmp_dir=None,
+                 log_stream=None):
         self.project_name = project_name
         self.working_dir = working_dir
         self.output_dir = output_dir
@@ -58,6 +61,7 @@ class Builder(object):
             (tmp_dir or '/tmp'), project_name + '.build'
         )
         self.configured = False
+        self.logger = log_stream or logger
 
     @property
     def source(self):
@@ -73,13 +77,15 @@ class Builder(object):
             project_name=self.project_name
         )
 
-    @classmethod
-    def run_command(cls, command, **kwargs):
+    def log(self, msg, level='info', **kwargs):
+        getattr(self.logger, level)(msg, **kwargs)
+
+    def run_command(self, command, **kwargs):
         if not isinstance(command, list):
             command = [command]
 
-        logger.debug(command)
-        logger.debug(kwargs)
+        self.log(command, 'debug')
+        self.log(kwargs, 'debug')
 
         result = subprocess.Popen(
             command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -87,7 +93,7 @@ class Builder(object):
         )
 
         for line in result.stdout:
-            logger.info(line.decode('utf8').replace('\n', '', 1))
+            self.log(line.decode('utf8').replace('\n', '', 1), 'info')
 
         if result.returncode:
             raise Exception(

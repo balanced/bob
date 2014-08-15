@@ -26,4 +26,11 @@ class HookController(api.RestController):
             forms.build(
                 result['organization'], result['name'], result['commit']
             )
-        return api.Response('travis.created')
+
+        def iterate_response():
+            for c in 'travis.created':
+                import time
+                yield str(c)
+                time.sleep(0.1)
+
+        return api.Response(app_iter=iterate_response())
