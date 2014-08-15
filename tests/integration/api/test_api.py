@@ -39,10 +39,8 @@ def test_github_payload_parsing(github_payload):
     result = api.hooks.forms.GithubForm(github_payload)
     assert result == {
         'commit': 'refs/tags/0.0.1',
-        'repository': {
-            'name': 'bob',
-            'organization': 'balanced'
-        },
+        'name': 'bob',
+        'organization': 'balanced',
         'build': False
     }
 
@@ -51,10 +49,8 @@ def test_travis_payload_parsing(travis_payload):
     result = api.hooks.forms.TravisForm(travis_payload)
     assert result == {
         'commit': 'd4d7cb7392a0b501a64c4d54645ca0aa2b9c9d2d',
-        'repository': {
-            'name': 'bob',
-            'organization': 'balanced'
-        },
+        'name': 'bob',
+        'organization': 'balanced',
         'success': True,
         'build': False
     }

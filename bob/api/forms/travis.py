@@ -9,20 +9,15 @@ user_tokens = {
 }
 
 
-class TravisRepoForm(pilo.Form):
-
-    name = pilo.fields.String()
-
-    organization = pilo.fields.String('owner_name')
-
-
 class TravisForm(pilo.Form):
 
     commit = pilo.fields.String()
 
-    repository = pilo.fields.SubForm(TravisRepoForm)
-
     success = pilo.fields.String('result_message')
+
+    name = pilo.fields.String('repository.name')
+
+    organization = pilo.fields.String('repository.owner_name')
 
     @success.munge
     def success(self, value):
@@ -33,8 +28,8 @@ class TravisForm(pilo.Form):
 
 def compute_travis_security(headers, form):
     auth_header = headers['Authorization']
-    organization = form['repository']['organization']
-    repo_name = form['repository']['name']
+    organization = form['organization']
+    repo_name = form['name']
     is_secure = any(
         sha256(
             '{}/{}{}'.format(organization, repo_name, token)

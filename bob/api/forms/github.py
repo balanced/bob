@@ -3,13 +3,6 @@ from __future__ import unicode_literals
 import pilo
 
 
-class GithubRepoForm(pilo.Form):
-
-    name = pilo.fields.String()
-
-    organization = pilo.fields.String()
-
-
 class GithubForm(pilo.Form):
 
     commit = pilo.fields.String('ref')
@@ -20,6 +13,8 @@ class GithubForm(pilo.Form):
             return pilo.NONE
         return value
 
-    repository = pilo.fields.SubForm(GithubRepoForm)
+    name = pilo.fields.String('repository.name')
+
+    organization = pilo.fields.String('repository.organization')
 
     build = pilo.fields.Boolean(default=False)
