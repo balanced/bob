@@ -3,12 +3,14 @@ from __future__ import unicode_literals
 import pytest
 from webtest import TestApp
 
+from bob import api
+
 from tests import fixtures
 
 
 @pytest.fixture
 def web_app():
-    return TestApp(fixtures.create_integration_app())
+    return TestApp(api.create_app())
 
 
 @pytest.fixture
