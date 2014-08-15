@@ -28,7 +28,6 @@ class TravisForm(pilo.Form):
 
     build = pilo.fields.Boolean(default=False)
 
-
     @build.compute
     def build(self):
         # branch is the tag on travis. since the tag should look like 1.0.0

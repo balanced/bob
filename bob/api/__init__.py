@@ -1,8 +1,14 @@
 from __future__ import unicode_literals
 
+import pyramid.threadlocal
+
 from thed import api
 
 from . import hooks
+
+
+registry = pyramid.threadlocal.get_current_registry()
+settings = registry.settings
 
 
 def includeme(config):

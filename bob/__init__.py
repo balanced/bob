@@ -8,6 +8,14 @@ class BobError(Exception):
     pass
 
 
-import builders, notifiers, transports
+import api
+import builders
+import notifiers
+import transports
 
 
+def main(global_config, **settings):
+    """
+    This function returns a Pyramid WSGI application.
+    """
+    return api.create_app()
