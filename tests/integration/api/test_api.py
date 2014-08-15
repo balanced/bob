@@ -5,6 +5,7 @@ from webtest import TestApp
 
 from bob import api
 
+
 from tests import fixtures
 
 
@@ -32,3 +33,7 @@ def test_hooks(web_app):
     assert response.body == 'github.created'
     response = web_app.post('/hooks/travis')
     assert response.body == 'travis.created'
+
+
+def test_github_payload_parsing(github_payload):
+    result = api.hooks.forms.GithubForm(github_payload)
