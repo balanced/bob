@@ -69,3 +69,13 @@ targets:
         - success
         - failure
 ```
+
+to hack on it:
+
+* Clone https://github.com/balanced/bob
+* Clone https://github.com/balanced-cookbooks/ba-bob
+* set the env variables specified in ba-bob/.kitchen.yml
+* `bundle exec kitchen converge`
+* `bundle exec kitchen login`
+* `time bob build ubuntu balanced balanced 153f85e`
+* hang out for 10 minutes.
