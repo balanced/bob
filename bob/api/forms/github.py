@@ -12,10 +12,10 @@ class GithubRepoForm(pilo.Form):
 
 class GithubForm(pilo.Form):
 
-    ref = pilo.fields.String()
+    commit = pilo.fields.String('ref')
 
-    @ref.filter
-    def ref(self, value):
+    @commit.filter
+    def commit(self, value):
         if 'refs/tags' not in value:
             return pilo.NONE
         return value
