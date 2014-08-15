@@ -21,3 +21,5 @@ class GithubForm(pilo.Form):
         return value
 
     repository = pilo.fields.SubForm(GithubRepoForm)
+
+    build = pilo.fields.Boolean(default=False)

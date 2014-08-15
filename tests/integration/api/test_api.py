@@ -41,16 +41,30 @@ def test_github_payload_parsing(github_payload):
         'commit': 'refs/tags/0.0.1',
         'repository': {
             'name': 'bob',
-            'organization': u'balanced'
-        }
+            'organization': 'balanced'
+        },
+        'build': False
     }
 
 
 def test_travis_payload_parsing(travis_payload):
     result = api.hooks.forms.TravisForm(travis_payload)
     assert result == {
-        'commit': '62aae5f70ceee39123ef',
+        'commit': 'd4d7cb7392a0b501a64c4d54645ca0aa2b9c9d2d',
         'repository': {
-            'name': u'minimal', 'organization': u'svenfuchs'
-        }
+            'name': 'bob',
+            'organization': 'balanced'
+        },
+        'success': True,
+        'build': False
     }
+
+
+def test_travis_authentication_siging(travis_payload):
+    headers= {
+        'Authorization': (
+            'f5191fd8903bcb2c8402d6b0f6b8a8482644b5a2f498437bea1ce12fcb15eea6'
+        )
+    }
+    result = api.hooks.forms.TravisForm(travis_payload)
+    assert api.hooks.forms.travis.compute_travis_security(headers, result)
