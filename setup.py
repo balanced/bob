@@ -32,11 +32,13 @@ requires = [
     'depot>=0.0.12,<0.1',
     'boto>=2.3.0,<2.4',
     'hipchat',
+    'configobj',
 ]
 
 extras_require = {
     'tests': [
         'blumpkin>=0.4.0,<0.5.0',
+        'ipdb',
     ]
 }
 
@@ -46,7 +48,7 @@ scripts = [
 
 
 setuptools.setup(
-    name='bob',
+    name='bobb',
     version=version,
     description='bob the builder',
     long_description=README + '\n\n' + CHANGES,

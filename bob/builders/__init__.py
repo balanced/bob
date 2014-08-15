@@ -5,8 +5,14 @@ import subprocess
 
 import yaml
 
+from bob import BobError
+
 
 logger = logging.getLogger(__name__)
+
+
+class InvalidSettingsVersion(BobError):
+    pass
 
 
 class GithubMixin(object):
@@ -121,8 +127,15 @@ class Builder(object):
     def settings(self):
         return yaml.safe_load(self.settings_file)
 
+    _options_parsers = {}
+
     def parse_options(self):
-        pass
+        settings = self.settings
+        version = settings.get('version', '1')
+        try:
+            self._options_parsers[str(version)]()
+        except KeyError as ex:
+            raise InvalidSettingsVersion(ex)
 
     def prepare_system(self):
         pass

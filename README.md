@@ -20,6 +20,9 @@ To build an ubuntu debian from git@github.com://balanced/balanced.git for tag
 Bob uses a YAML file inside the project it's building. Here's how it should look
 
 ```yaml
+---
+# which version of the settings to use.
+version: 1
 targets:
   # ubuntu is currently the only target
   ubuntu:

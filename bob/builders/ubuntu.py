@@ -28,7 +28,10 @@ class UbuntuBuilder(Builder, GithubMixin):
     exclude = None
 
     def parse_options(self):
+        self._options_parsers['1'] = self._parse_options_v1
         super(UbuntuBuilder, self).parse_options()
+
+    def _parse_options_v1(self):
         settings = self.settings
         wanted_info = [
             'dependencies', 'build_dependencies', 'before_install',
