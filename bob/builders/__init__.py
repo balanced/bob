@@ -134,7 +134,7 @@ class Builder(object):
         pass
 
     def notify(self, message, on=None):
-        for channel, kwargs in self.notifiers.iteritems():
+        for channel, kwargs in self.notifications.iteritems():
             if on and on in kwargs['on']:
                 self.notifiers[channel](message)
 
