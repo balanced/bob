@@ -34,6 +34,7 @@ requires = [
     'hipchat',
     'configobj',
     'pilo>=0.3.8,<0.4',
+    'semantic_version>=2.3.0,<2.4'
 ]
 
 extras_require = {

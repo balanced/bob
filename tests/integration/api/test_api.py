@@ -46,14 +46,20 @@ def test_github_payload_parsing(github_payload):
 
 
 def test_travis_payload_parsing(travis_payload):
-    result = api.hooks.forms.TravisForm(travis_payload)
-    assert result == {
+    expected_payload = {
         'commit': 'd4d7cb7392a0b501a64c4d54645ca0aa2b9c9d2d',
         'name': 'bob',
         'organization': 'balanced',
         'success': True,
-        'build': False
+        'build': True,
+        'branch': '0.0.2'
     }
+    result = api.hooks.forms.TravisForm(travis_payload)
+    assert result == expected_payload
+    travis_payload['branch'] = expected_payload['branch'] = 'master'
+    result = api.hooks.forms.TravisForm(travis_payload)
+    expected_payload['build'] = False
+    assert result == expected_payload
 
 
 def test_travis_authentication_siging(travis_payload):
