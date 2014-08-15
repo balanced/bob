@@ -21,6 +21,20 @@ def travis_payload():
     )
 
 
+@pytest.fixture(params=['master', '0.0.1'])
+def travis_payload_and_result(request, travis_payload):
+    travis_payload['branch'] = request.param
+    expected_payload = {
+        'commit': 'd4d7cb7392a0b501a64c4d54645ca0aa2b9c9d2d',
+        'name': 'bob',
+        'organization': 'balanced',
+        'success': True,
+        'build': request.param == '0.0.1',
+        'branch': request.param
+    }
+    return travis_payload, expected_payload
+
+
 @pytest.fixture
 def github_payload():
     return fixtures.load_json(
@@ -45,20 +59,9 @@ def test_github_payload_parsing(github_payload):
     }
 
 
-def test_travis_payload_parsing(travis_payload):
-    expected_payload = {
-        'commit': 'd4d7cb7392a0b501a64c4d54645ca0aa2b9c9d2d',
-        'name': 'bob',
-        'organization': 'balanced',
-        'success': True,
-        'build': True,
-        'branch': '0.0.2'
-    }
+def test_travis_payload_parsing(travis_payload_and_result):
+    travis_payload, expected_payload = travis_payload_and_result
     result = api.hooks.forms.TravisForm(travis_payload)
-    assert result == expected_payload
-    travis_payload['branch'] = expected_payload['branch'] = 'master'
-    result = api.hooks.forms.TravisForm(travis_payload)
-    expected_payload['build'] = False
     assert result == expected_payload
 
 
