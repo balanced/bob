@@ -40,6 +40,7 @@ extras_require = {
     'tests': [
         'blumpkin>=0.4.0,<0.5.0',
         'ipdb',
+        'webtest',
     ]
 }
 
