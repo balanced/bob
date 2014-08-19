@@ -39,6 +39,6 @@ targets:
       hipchat:
         room_id: dev
         color: purple
-        on:
+        events:
         - success
         - failure

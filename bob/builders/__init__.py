@@ -153,10 +153,8 @@ class Builder(object):
         pass
 
     def notify(self, message, event=None):
-        print self.notifications
-        print self.notifiers
         for channel, options in self.notifications.iteritems():
-            if event and options and event in options.get('on', []):
+            if event and options and event in options.get('events', []):
                 self.notifiers[channel](message)
 
     def notify_success(self, version):
