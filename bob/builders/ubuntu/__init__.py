@@ -123,11 +123,23 @@ class UbuntuBuilder(Builder, GithubMixin):
     def package(self, version):
         super(UbuntuBuilder, self).package(version)
         assert self.configured
-
+        if version[0] == 'v':
+            version = version[1:]
         dependencies = ''.join(
             ' -d {}'.format(dep) for dep in self.dependencies
         )
         hooks = ''
+        workspace_path = self.source
+        for scripts, type in (
+            ('before-install', 'before_install'),
+            ('after-install', 'after_install'),
+            ('before-remove', 'before_remove'),
+            ('after-remove', 'after_remove'),
+        ):
+            hooks += ''.join(
+                ' --{}={}/{}'.format(scripts, workspace_path, script)
+                for script in getattr(self, type)
+            )
         package_command = '''
         fpm -s dir -t deb -n {project_name} -v {version} -x "*.pyc" \
             {dependencies} \
