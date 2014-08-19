@@ -63,7 +63,7 @@ def background_build(github_organization, github_repo, commit_hash_or_tag):
     # HACK: until we figure out settings.ini
     settings = settings or {}
     working_dir = os.path.expanduser(settings.get('working_dir', '~/work'))
-    output_dir = os.path.expanduser(settings.get('output_dir', '~/out'))
+    output_dir = os.path.expanduser(settings.get('output_dir', '/opt'))
     logger = create_logger(
         github_organization, github_repo, commit_hash_or_tag
     )
