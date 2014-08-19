@@ -77,8 +77,9 @@ def test_github(web_app, github_payload):
     assert response.body == 'github.created'
 
 
-@mock.patch('bob.api.forms.build')
+@mock.patch('bob.api.forms.build_threaded')
 def test_travis(build, web_app, travis_payload, travis_auth_headers):
+    build.return_value = 'travis.created'
     response = post_json(
         web_app, '/hooks/travis',
         travis_payload,

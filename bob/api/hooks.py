@@ -23,14 +23,21 @@ class HookController(api.RestController):
     def travis(self):
         result = forms.TravisForm(self.request.json)
         if result['build']:
-            forms.build(
+            response = forms.build_threaded(
                 result['organization'], result['name'], result['commit']
             )
+        else:
+            response = 'nope nope nope'
 
         def iterate_response():
-            for c in 'travis.created':
-                import time
-                yield str(c)
-                time.sleep(0.1)
+            for lines in response:
+                if isinstance(lines, tuple):
+                    level, lines = lines
+                if not isinstance(lines, list):
+                    lines = [lines]
+                for line in lines:
+                    if not isinstance(line, basestring):
+                        line = unicode(line)
+                    yield str(line.encode('utf-8'))
 
         return api.Response(app_iter=iterate_response())

@@ -152,9 +152,11 @@ class Builder(object):
     def package(self, version):
         pass
 
-    def notify(self, message, on=None):
-        for channel, kwargs in self.notifications.iteritems():
-            if on and on in kwargs['on']:
+    def notify(self, message, event=None):
+        print self.notifications
+        print self.notifiers
+        for channel, options in self.notifications.iteritems():
+            if event and options and event in options.get('on', []):
                 self.notifiers[channel](message)
 
     def notify_success(self, version):
@@ -162,7 +164,7 @@ class Builder(object):
             'built {} version {} and uploaded to unstable'.format(
                 self.project_name, version
             ),
-            on='success',
+            event='success',
         )
 
     def notify_failure(self, version, ex):
@@ -170,7 +172,7 @@ class Builder(object):
             '{} version {} failed to build.<br><br><pre>{}</pre>'.format(
                 self.project_name, version, str(ex)
             ),
-            on='failure'
+            event='failure'
         )
 
     def upload(self, path_to_file):
