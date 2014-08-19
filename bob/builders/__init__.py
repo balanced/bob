@@ -50,7 +50,10 @@ class Builder(object):
 
     notifications = None
 
-    def __init__(self, project_name, working_dir, output_dir, tmp_dir=None):
+    logger = None
+
+    def __init__(self, project_name, working_dir, output_dir, tmp_dir=None,
+                 log_stream=None):
         self.project_name = project_name
         self.working_dir = working_dir
         self.output_dir = output_dir
@@ -58,6 +61,7 @@ class Builder(object):
             (tmp_dir or '/tmp'), project_name + '.build'
         )
         self.configured = False
+        self.logger = log_stream or logger
 
     @property
     def source(self):
@@ -73,13 +77,15 @@ class Builder(object):
             project_name=self.project_name
         )
 
-    @classmethod
-    def run_command(cls, command, **kwargs):
+    def log(self, msg, level='info', **kwargs):
+        getattr(self.logger, level)(msg, **kwargs)
+
+    def run_command(self, command, **kwargs):
         if not isinstance(command, list):
             command = [command]
 
-        logger.debug(command)
-        logger.debug(kwargs)
+        self.log(command, 'debug')
+        self.log(kwargs, 'debug')
 
         result = subprocess.Popen(
             command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -87,7 +93,7 @@ class Builder(object):
         )
 
         for line in result.stdout:
-            logger.info(line.decode('utf8').replace('\n', '', 1))
+            self.log(line.decode('utf8').replace('\n', '', 1), 'info')
 
         if result.returncode:
             raise Exception(
@@ -146,9 +152,11 @@ class Builder(object):
     def package(self, version):
         pass
 
-    def notify(self, message, on=None):
-        for channel, kwargs in self.notifications.iteritems():
-            if on and on in kwargs['on']:
+    def notify(self, message, event=None):
+        print self.notifications
+        print self.notifiers
+        for channel, options in self.notifications.iteritems():
+            if event and options and event in options.get('on', []):
                 self.notifiers[channel](message)
 
     def notify_success(self, version):
@@ -156,7 +164,7 @@ class Builder(object):
             'built {} version {} and uploaded to unstable'.format(
                 self.project_name, version
             ),
-            on='success',
+            event='success',
         )
 
     def notify_failure(self, version, ex):
@@ -164,7 +172,7 @@ class Builder(object):
             '{} version {} failed to build.<br><br><pre>{}</pre>'.format(
                 self.project_name, version, str(ex)
             ),
-            on='failure'
+            event='failure'
         )
 
     def upload(self, path_to_file):

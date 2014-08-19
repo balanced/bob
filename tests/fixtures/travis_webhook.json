@@ -1,0 +1,72 @@
+{
+    "id": 32677404,
+    "repository": {
+        "id": 2834378,
+        "name": "bob",
+        "owner_name": "balanced",
+        "url": "https://github.com/balanced/bob"
+    },
+    "number": "8",
+    "config": {
+        "language": "python",
+        "python": [2.7],
+        "install": ["pip install \"blumpkin>=0.4,<0.5\"", "pip install -e .[tests]", "python setup.py develop"],
+        "script": ["blumpkin test --cov=bob --cov-report term-missing xml .", "blumpkin coverage coverage.xml bob.builders:70"],
+        "after_success": ["find thed -name \"*.py\" | xargs pep8 --ignore=E711 | tee pep8.out"],
+        "notifications": {
+            "webhooks": "http://requestb.in/sltsafsl"
+        },
+        ".result": "configured",
+        "os": "linux"
+    },
+    "status": 0,
+    "result": 0,
+    "status_message": "Passed",
+    "result_message": "Passed",
+    "started_at": "2014-08-15T22:07:28Z",
+    "finished_at": "2014-08-15T22:09:28Z",
+    "duration": 120,
+    "build_url": "https://travis-ci.org/balanced/bob/builds/32677404",
+    "commit": "d4d7cb7392a0b501a64c4d54645ca0aa2b9c9d2d",
+    "branch": "0.0.2",
+    "message": "missing dependency",
+    "compare_url": "https://github.com/balanced/bob/compare/0.0.2",
+    "committed_at": "2014-08-15T21:57:51Z",
+    "author_name": "Marshall Jones",
+    "author_email": "marshall@balancedpayments.com",
+    "committer_name": "Marshall Jones",
+    "committer_email": "marshall@balancedpayments.com",
+    "matrix": [
+        {
+            "id": 32677405,
+            "repository_id": 2834378,
+            "parent_id": 32677404,
+            "number": "8.1",
+            "state": "finished",
+            "config": {
+                "language": "python",
+                "python": 2.7,
+                "install": ["pip install \"blumpkin>=0.4,<0.5\"", "pip install -e .[tests]", "python setup.py develop"],
+                "script": ["blumpkin test --cov=bob --cov-report term-missing xml .", "blumpkin coverage coverage.xml bob.builders:70"],
+                "after_success": ["find thed -name \"*.py\" | xargs pep8 --ignore=E711 | tee pep8.out"],
+                "notifications": {
+                    "webhooks": "http://requestb.in/sltsafsl"
+                },
+                ".result": "configured"
+            },
+            "status": null,
+            "result": null,
+            "commit": "d4d7cb7392a0b501a64c4d54645ca0aa2b9c9d2d",
+            "branch": "0.0.2",
+            "message": "missing dependency",
+            "compare_url": "https://github.com/balanced/bob/compare/0.0.2",
+            "committed_at": "2014-08-15T21:57:51Z",
+            "author_name": "Marshall Jones",
+            "author_email": "marshall@balancedpayments.com",
+            "committer_name": "Marshall Jones",
+            "committer_email": "marshall@balancedpayments.com",
+            "finished_at": "2014-08-15T22:09:28Z"
+        }
+    ],
+    "type": "push"
+}

@@ -37,8 +37,8 @@ class UbuntuBuilder(Builder, GithubMixin):
         result = forms.V1Settings(**settings)
         for key, value in result['targets'][self.flavor].iteritems():
             setattr(self, key, value)
-            logger.info(key)
-            logger.info(value)
+            self.log(key, 'info')
+            self.log(value, 'info')
         self.configured = True
 
     def _install_system_dependencies(self):

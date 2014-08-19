@@ -1,0 +1,44 @@
+targets:
+  # ubuntu is currently the only target
+  ubuntu:
+    # do not package anything that matches these globs
+    exclude:
+      - "*.pyc"
+      - ".git*"
+    # required to build this project
+    build_dependencies:
+      - python-dev
+      - libxml2-dev
+      - libxslt1-dev
+    # required to install this package
+    dependencies:
+      - libxml2
+      - libxslt1.1
+      - libpq5
+      - ipython
+    # any executable scripts relative to the root of this project that will be
+    # executed upon package action
+    before_install:
+    after_install:
+      - scripts/after-install.sh
+    before_remove:
+      - scripts/before-remove.sh
+    after_remove:
+    # what to do with the finished product (s3 and depot are the only actions
+    # right now)
+    destinations:
+#      s3:
+#        destination: s3://apt.vandelay.io
+      depot:
+        destination: s3://apt.vandelay.io
+        gpg_key: 277E7787
+        component: unstable
+        codename: lucid
+    # when and where to tell the world about builds
+    notifications:
+      hipchat:
+        room_id: dev
+        color: purple
+        on:
+        - success
+        - failure

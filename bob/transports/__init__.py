@@ -21,7 +21,7 @@ class BotoS3Uploader(Uploader):
         conn = boto.connect_s3()
         bucket = conn.get_bucket(destination)
         file_name = os.path.basename(path_to_file)
-        key = bucket.get_key(file_name )
+        key = bucket.get_key(file_name)
         if not key:
             key = bucket.new_key(file_name)
         key.set_contents_from_file(path_to_file)

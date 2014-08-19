@@ -10,3 +10,5 @@ script:
 - blumpkin coverage coverage.xml bob.builders:70
 after_success:
 - find thed -name "*.py" | xargs pep8 --ignore=E711 | tee pep8.out
+notifications:
+  webhooks: http://requestb.in/sltsafsl
