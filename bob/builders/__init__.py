@@ -158,20 +158,18 @@ class Builder(object):
                 self.notifiers[channel](message)
 
     def notify_success(self, version):
-        self.notify(
-            'built {} version {} and uploaded to unstable'.format(
-                self.project_name, version
-            ),
-            event='success',
+        msg = 'built {} version {} and uploaded to unstable'.format(
+            self.project_name, version
         )
+        self.notify(msg, event='success')
+        self.log(msg)
 
     def notify_failure(self, version, ex):
-        self.notify(
-            '{} version {} failed to build.<br><br><pre>{}</pre>'.format(
-                self.project_name, version, str(ex)
-            ),
-            event='failure'
+        msg = '{} version {} failed to build.<br><br><pre>{}</pre>'.format(
+            self.project_name, version, str(ex)
         )
+        self.notify(msg, event='failure')
+        self.log(msg)
 
     def upload(self, path_to_file):
         for transport, kwargs in self.destinations.iteritems():

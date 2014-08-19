@@ -8,7 +8,7 @@ import hipchat.room
 from bob.builders.ubuntu import UbuntuBuilder
 
 
-@UbuntuBuilder.register_notification('travis')
+@UbuntuBuilder.register_notification('hipchat')
 def notify(message, **options):
     payload = {
         'from': 'bob the builder',

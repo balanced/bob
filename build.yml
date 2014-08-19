@@ -33,7 +33,7 @@ targets:
         destination: s3://apt.vandelay.io
         gpg_key: 277E7787
         component: unstable
-        codename: lucid
+        codename: precise
     # when and where to tell the world about builds
     notifications:
       hipchat:

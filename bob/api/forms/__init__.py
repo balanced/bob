@@ -83,6 +83,8 @@ def background_build(github_organization, github_repo, commit_hash_or_tag):
         builder.notify_success(commit_hash_or_tag)
     except Exception as ex:
         builder.notify_failure(commit_hash_or_tag, ex)
+    finally:
+        builder.log('***finished***')
 
 
 def create_logger(github_organization, github_repo, commit_hash_or_tag):
