@@ -4,7 +4,7 @@ import pyramid.threadlocal
 
 from thed import api
 
-from . import hooks
+from . import hooks, health
 
 
 registry = pyramid.threadlocal.get_current_registry()
@@ -12,7 +12,7 @@ settings = registry.settings
 
 
 def includeme(config):
-    hooks.HookController.scan(config)
+    api.RestController.scan(config)
 
 
 def create(**overrides):

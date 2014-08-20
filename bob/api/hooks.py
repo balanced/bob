@@ -6,13 +6,13 @@ from . import forms
 
 
 @api.Resource.nest('hooks')
-class HookResource(api.Resource):
+class Resource(api.Resource):
 
     pass
 
 
-@api.RestController.register('hooks', context=HookResource)
-class HookController(api.RestController):
+@api.RestController.register('hooks', context=Resource)
+class Controller(api.RestController):
 
     @api.decorators.view_config(name='github', request_method='POST')
     def github(self):
