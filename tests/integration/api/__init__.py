@@ -1,1 +1,1 @@
-__author__ = 'marshall'
+from __future__ import unicode_literals
