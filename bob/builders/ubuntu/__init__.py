@@ -138,7 +138,7 @@ class UbuntuBuilder(Builder, GithubMixin):
         ):
             hooks += ''.join(
                 ' --{}={}/{}'.format(scripts, workspace_path, script)
-                for script in getattr(self, type)
+                for script in (getattr(self, type) or [])
             )
         package_command = '''
         fpm -s dir -t deb -n {project_name} -v {version} -x "*.pyc" \

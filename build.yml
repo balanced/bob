@@ -1,3 +1,4 @@
+description: bob the builder service
 targets:
   # ubuntu is currently the only target
   ubuntu:
@@ -19,11 +20,13 @@ targets:
     # any executable scripts relative to the root of this project that will be
     # executed upon package action
     before_install:
+      - scripts/before-install.sh
     after_install:
       - scripts/after-install.sh
     before_remove:
       - scripts/before-remove.sh
     after_remove:
+      - scripts/after-remove.sh
     # what to do with the finished product (s3 and depot are the only actions
     # right now)
     destinations:
