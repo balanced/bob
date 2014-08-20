@@ -39,5 +39,6 @@ class HookController(api.RestController):
                     if not isinstance(line, basestring):
                         line = unicode(line)
                     yield str(line.encode('utf-8'))
+                    yield str('\n')
 
         return api.Response(app_iter=iterate_response())
