@@ -1,10 +1,14 @@
 from __future__ import unicode_literals
 import json
+import logging
 import os
 
 from thed import api
 
 from . import forms
+
+
+logger = logging.getLogger(__name__)
 
 
 @api.Resource.nest('hooks')
@@ -40,6 +44,9 @@ class Controller(api.RestController):
             # parameter that contains the JSON webhook payload in a URL-encoded
             # format.
             result = forms.TravisForm(json.loads(self.request.POST['payload']))
+
+        logger.info(result)
+
         if result['build']:
             response = forms.build_threaded(
                 result['organization'], result['name'], result['commit']
