@@ -7,7 +7,7 @@ install:
 - python setup.py develop
 script:
 - blumpkin test --cov=bob --cov-report term-missing xml .
-- blumpkin coverage coverage.xml bob.builders:70
+- blumpkin coverage coverage.xml bob.builders:68
 after_success:
 - find thed -name "*.py" | xargs pep8 --ignore=E711 | tee pep8.out
 notifications:
