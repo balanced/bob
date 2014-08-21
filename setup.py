@@ -37,7 +37,7 @@ requires = [
     'semantic_version>=2.3.0,<2.4',
     'gevent>=1.0.0,<1.1',
     'uWSGI>=2.0.6,<2.1',
-    'chronicle>=1.0.1,<1.1'
+    'chronicle>=1.0.2,<1.1'
 ]
 
 extras_require = {
