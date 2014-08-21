@@ -35,7 +35,8 @@ requires = [
     'configobj',
     'pilo>=0.3.8,<0.4',
     'semantic_version>=2.3.0,<2.4',
-    'gevent'
+    'gevent>=1.0.0,<1.1',
+    'uWSGI>=2.0.6,<2.1'
 ]
 
 extras_require = {
@@ -48,6 +49,7 @@ extras_require = {
 
 scripts = [
     'bin/bob',
+    'bin/bobd',
 ]
 
 

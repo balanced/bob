@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import json
+import os
 
 from thed import api
 
@@ -14,6 +15,14 @@ class Resource(api.Resource):
 
 @api.RestController.register('hooks', context=Resource)
 class Controller(api.RestController):
+
+    def index(self):
+        def iterate_response():
+            root = os.path.expanduser('~/logs')
+            for file_name in list_logs(root):
+                yield str(os.path.relpath(file_name, root))
+                yield str('\n')
+        return api.Response(app_iter=iterate_response())
 
     @api.decorators.view_config(name='github', request_method='POST')
     def github(self):
@@ -51,3 +60,14 @@ class Controller(api.RestController):
                     yield str('\n')
 
         return api.Response(app_iter=iterate_response())
+
+
+def list_logs(path):
+    for root_directory, directories, files in os.walk(path):
+        for file_name in files:
+            yield os.path.join(root_directory, file_name)
+        for current_directory in directories:
+            for file_name in list_logs(
+                    os.path.join(root_directory, current_directory)
+            ):
+                yield file_name

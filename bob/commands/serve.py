@@ -10,20 +10,11 @@ from bob import api
 logger = logging.getLogger(__name__)
 
 
-class Dispatcher(object):
-
-    def __init__(self, app):
-        self.app = app
-
-    def __call__(self, environ, start_response):
-        return self.app(environ, start_response)
-
-
 @click.command('serve')
 @click.option('--port', default=6543)
 @click.option('--host', default='0.0.0.0')
 def serve(port, host):
-    dispatcher = Dispatcher(api.create_app())
+    dispatcher = api.Dispatcher()
     server = wsgiref.simple_server.make_server(
         host, port, dispatcher,
     )
