@@ -80,3 +80,7 @@ to hack on it:
 * `bundle exec kitchen login`
 * `time bob build ubuntu balanced balanced 153f85e`
 * hang out for 10 minutes.
+
+## Run via uwsgi
+
+`bobd -u uwsgi.ini -- --env=BOB_CONF=xxx.ini`

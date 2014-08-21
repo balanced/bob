@@ -30,3 +30,12 @@ def create_app(**overrides):
         config.scan()
 
     return create(hook=hook, **overrides)
+
+
+class Dispatcher(object):
+
+    def __init__(self, app=None):
+        self.app = app or create_app()
+
+    def __call__(self, environ, start_response):
+        return self.app(environ, start_response)
