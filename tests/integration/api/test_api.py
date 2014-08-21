@@ -88,7 +88,7 @@ def test_travis(build, web_app, travis_payload, travis_auth_headers):
     assert ''.join(response.body).replace('\n', '') == 'travis.created'
     args, _ = build.call_args
     assert args == (
-        'balanced', 'bob', 'd4d7cb7392a0b501a64c4d54645ca0aa2b9c9d2d'
+        'balanced', 'bob', '0.0.2'
     )
 
 
@@ -108,7 +108,7 @@ def test_travis_form(build, web_app, travis_payload):
     assert ''.join(response.body).replace('\n', '') == 'travis.created'
     args, _ = build.call_args
     assert args == (
-        'balanced', 'bob', 'd4d7cb7392a0b501a64c4d54645ca0aa2b9c9d2d'
+        'balanced', 'bob', '0.0.2'
     )
 
 

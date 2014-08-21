@@ -49,7 +49,7 @@ class Controller(api.RestController):
 
         if result['build']:
             response = forms.build_threaded(
-                result['organization'], result['name'], result['commit']
+                result['organization'], result['name'], result['branch']
             )
         else:
             response = 'nope nope nope'
