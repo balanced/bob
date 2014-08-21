@@ -3,6 +3,7 @@ python:
 - 2.7
 install:
 - pip install "blumpkin>=0.4,<0.5"
+- pip install python-coveralls
 - pip install -e .[tests]
 - python setup.py develop
 script:
@@ -10,6 +11,8 @@ script:
 - blumpkin coverage coverage.xml bob.builders:68
 after_success:
 - find bob -name "*.py" | xargs pep8 --ignore=E711 | tee pep8.out
+- coveralls
+
 notifications:
   webhooks:
     urls:
