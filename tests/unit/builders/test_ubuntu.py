@@ -13,6 +13,8 @@ def ubuntu_builder():
     working_dir = '/test'
     output_dir = '/out'
     tmp_dir = '/tmp'
+    builder = UbuntuBuilder(project_name, working_dir, output_dir, tmp_dir)
+    builder.run_command = mock.Mock()
     return UbuntuBuilder(project_name, working_dir, output_dir, tmp_dir)
 
 
@@ -96,3 +98,13 @@ class TestUbuntuBuilder(object):
 
     def test_load_mininal(self, ubuntu_builder_with_min_settings):
         ubuntu_builder_with_min_settings.parse_options()
+
+    def test(self, ubuntu_builder):
+        commit_hash_or_tag = '0.0.1'
+        with mock.patch.object(ubuntu_builder, 'notify') as call:
+            ubuntu_builder.notify_success(commit_hash_or_tag)
+        assert call.called
+        exception = Exception('foo')
+        with mock.patch.object(ubuntu_builder, 'notify') as call:
+            ubuntu_builder.notify_failure(commit_hash_or_tag, exception)
+        assert call.called
