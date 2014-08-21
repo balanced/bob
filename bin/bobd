@@ -18,7 +18,6 @@ import os
 import subprocess
 import sys
 import signal
-import bob
 
 
 def create_arg_parser():
@@ -27,17 +26,29 @@ def create_arg_parser():
         '-u', '--uwsgi-conf',
         default=os.environ.get('BOB_UWSGI_CONF', '/etc/bob/uwsgi.conf'),
     )
+    parser.add_argument(
+        '-c', '--conf',
+        default=os.environ.get('BOB_CONF'),
+    )
+    parser.add_argument(
+        '--logging-conf',
+        default=os.environ.get('BOB_LOGGING_CONF'),
+    )
     return parser
 
 
-def uwsgi(uwsgi_conf, extras):
+def uwsgi(uwsgi_conf, conf, logging_conf, extras):
     executable = os.path.join(os.path.dirname(sys.executable), 'uwsgi')
     cmd = [
         executable,
+        '--env',
+        'BOB_LOGGING_CONF={}'.format(logging_conf),
+        '--env',
+        'BOB_CONF={}'.format(conf),
         uwsgi_conf,
     ] + extras
 
-    print cmd
+    print ' '.join(cmd)
     return subprocess.Popen(cmd)
 
 
@@ -55,6 +66,8 @@ def main():
 
     proc = uwsgi(
         args.uwsgi_conf,
+        args.conf,
+        args.logging_conf,
         extras
     )
 

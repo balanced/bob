@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import os
 
 import pyramid.threadlocal
 
@@ -35,6 +36,8 @@ def create_app(**overrides):
 class Dispatcher(object):
 
     def __init__(self, app=None):
+        from bob import configure_logging
+        configure_logging(os.environ.get('BOB_LOGGING_CONF'))
         self.app = app or create_app()
 
     def __call__(self, environ, start_response):
