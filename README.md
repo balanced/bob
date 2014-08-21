@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/balanced/bob.svg)](https://travis-ci.org/balanced/bob)
 ![Alt text](http://i49.photobucket.com/albums/f265/jsh00ter12/jfkl.jpg)
+[![Coverage Status](https://coveralls.io/repos/balanced/bob/badge.png)](https://coveralls.io/r/balanced/bob)
 
 Builds debian packages via fpm and pip.
 
