@@ -92,6 +92,26 @@ def test_travis(build, web_app, travis_payload, travis_auth_headers):
     )
 
 
+@mock.patch('bob.api.forms.build_threaded')
+def test_travis_form(build, web_app, travis_payload):
+    build.return_value = 'travis.created'
+    # http://docs.travis-ci.com/user/notifications/
+    # Webhooks are delivered with a application/x-www-form-urlencoded
+    # content type using HTTP POST, with the body including a payload
+    # parameter that contains the JSON webhook payload in a URL-encoded
+    # format.
+    payload = json.dumps(travis_payload)
+    response = web_app.post(
+        '/hooks/travis', params={'payload': str(payload)},
+        headers={str('content-type'): str('application/x-www-form-urlencoded')}
+    )
+    assert ''.join(response.body).replace('\n', '') == 'travis.created'
+    args, _ = build.call_args
+    assert args == (
+        'balanced', 'bob', 'd4d7cb7392a0b501a64c4d54645ca0aa2b9c9d2d'
+    )
+
+
 def test_github_payload_parsing(github_payload):
     result = api.hooks.forms.GithubForm(github_payload)
     assert result == {

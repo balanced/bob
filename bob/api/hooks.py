@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import json
 
 from thed import api
 
@@ -21,7 +22,15 @@ class Controller(api.RestController):
 
     @api.decorators.view_config(name='travis', request_method='POST')
     def travis(self):
-        result = forms.TravisForm(self.request.json)
+        try:
+            result = forms.TravisForm(self.request.json)
+        except ValueError:
+            # http://docs.travis-ci.com/user/notifications/
+            # Webhooks are delivered with a application/x-www-form-urlencoded
+            # content type using HTTP POST, with the body including a payload
+            # parameter that contains the JSON webhook payload in a URL-encoded
+            # format.
+            result = forms.TravisForm(json.loads(self.request.POST['payload']))
         if result['build']:
             response = forms.build_threaded(
                 result['organization'], result['name'], result['commit']
