@@ -11,4 +11,9 @@ script:
 after_success:
 - find thed -name "*.py" | xargs pep8 --ignore=E711 | tee pep8.out
 notifications:
-  webhooks: http://requestb.in/sltsafsl
+  webhooks:
+    urls:
+      - https://builder.vandelay.io/hooks/travis
+    on_success: always
+    on_failure: never
+    on_start: false
