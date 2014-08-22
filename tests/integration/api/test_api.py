@@ -6,18 +6,14 @@ import pytest
 from webtest import TestApp
 
 from bob import api
-
+from bob.api import forms
 
 from tests import fixtures
 
 
 @pytest.fixture
 def web_app():
-    settings = {
-        'working_dir': '~/work',
-        'output_dir': '~/out',
-    }
-    return TestApp(api.create_app(**settings))
+    return TestApp(api.Dispatcher())
 
 
 @pytest.fixture
@@ -77,7 +73,7 @@ def test_github(web_app, github_payload):
     assert response.body == 'github.created'
 
 
-@mock.patch('bob.api.forms.build_threaded')
+@mock.patch('bob.api.forms.queue_build')
 def test_travis(build, web_app, travis_payload, travis_auth_headers):
     build.return_value = 'travis.created'
     response = post_json(
@@ -92,7 +88,7 @@ def test_travis(build, web_app, travis_payload, travis_auth_headers):
     )
 
 
-@mock.patch('bob.api.forms.build_threaded')
+@mock.patch('bob.api.forms.queue_build')
 def test_travis_form(build, web_app, travis_payload):
     build.return_value = 'travis.created'
     # http://docs.travis-ci.com/user/notifications/
@@ -113,7 +109,7 @@ def test_travis_form(build, web_app, travis_payload):
 
 
 def test_github_payload_parsing(github_payload):
-    result = api.hooks.forms.GithubForm(github_payload)
+    result = api.hooks.forms.github.WebhookForm(github_payload)
     assert result == {
         'commit': 'refs/tags/0.0.1',
         'name': 'bob',
@@ -124,12 +120,33 @@ def test_github_payload_parsing(github_payload):
 
 def test_travis_payload_parsing(travis_payload_and_result):
     travis_payload, expected_payload = travis_payload_and_result
-    result = api.hooks.forms.TravisForm(travis_payload)
+    result = api.hooks.forms.travis.WebhookForm(travis_payload)
     assert result == expected_payload
 
 
-def test_travis_authentication_siging(travis_payload, travis_auth_headers):
-    result = api.hooks.forms.TravisForm(travis_payload)
+def test_travis_authentication_signing(travis_payload, travis_auth_headers):
+    result = api.hooks.forms.travis.WebhookForm(travis_payload)
     assert api.hooks.forms.travis.compute_travis_security(
         travis_auth_headers, result
     )
+
+
+def test_queue_submission():
+    kwargs = dict(
+        github_organization='bal',
+        github_repo='bob',
+        commit_hash_or_tag='0.0.1'
+    )
+    with mock.patch('boto.sqs') as sqs:
+        result = api.forms.queue_build(**kwargs)
+    conn = sqs.connect_to_region.return_value
+    queue = conn.get_queue.return_value
+    args, _ = queue.write.call_args
+    message = args[0]
+    _, message_kwargs = message.update.call_args
+    assert kwargs == message_kwargs
+    assert message.id == result
+
+
+def test_logs(web_app):
+    web_app.get('/hooks/logs')

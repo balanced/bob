@@ -5,26 +5,25 @@ import logging.config
 import os
 import sys
 
+import ConfigParser
+
 
 __version__ = '0.2.6'
+
+logger = logging.getLogger(__name__)
 
 
 class BobError(Exception):
     pass
 
 
-import api
-import builders
-import notifiers
-import transports
-
-
 def configure_logging(log_config=None, log_level=logging.INFO):
+    log_config = log_config or os.environ.get('BOB_LOGGING_CONF', None)
     if log_config and os.path.exists(log_config):
         try:
             logging.config.dictConfig(eval(open(log_config, 'r').read()))
             logging.getLogger().setLevel(log_level)
-        except Exception, ex:
+        except Exception as ex:
             print >> sys.stderr, 'unable to load "{}" - {}'.format(
                 log_config, str(ex)
             )
@@ -39,3 +38,33 @@ def configure_logging(log_config=None, log_level=logging.INFO):
             format='%(asctime)s : %(levelname)s : %(name)s : %(message)s',
             stream=sys.stderr,
         )
+
+
+def init_config(overrides=None):
+    if overrides == '-':
+        overrides = None
+    overrides = overrides or os.environ.get('BOB_CONF', None)
+    if isinstance(overrides, dict):
+        return overrides
+    if overrides:
+        logger.info('loading config overrides from "%s"', overrides)
+        if not os.path.exists(overrides):
+            raise Exception('Config %s not found' % overrides)
+        config = ConfigParser.RawConfigParser()
+        config.read(overrides)
+        return dict(config.items('bobb:main'))
+    return {}
+
+
+settings = None
+
+
+def init(path_to_config=None):
+    global settings
+    settings = init_config(path_to_config)
+
+
+import api
+import builders
+import notifiers
+import transports

@@ -1,15 +1,10 @@
 from __future__ import unicode_literals
-import os
-
-import pyramid.threadlocal
 
 from thed import api
 
+import bob
+
 from . import hooks, health
-
-
-registry = pyramid.threadlocal.get_current_registry()
-settings = registry.settings
 
 
 def includeme(config):
@@ -36,9 +31,10 @@ def create_app(**overrides):
 class Dispatcher(object):
 
     def __init__(self, app=None):
-        from bob import configure_logging
-        configure_logging(os.environ.get('BOB_LOGGING_CONF'))
-        self.app = app or create_app()
+        bob.configure_logging()
+        bob.init()
+        app_settings = bob.init_config()
+        self.app = app or create_app(**app_settings)
 
     def __call__(self, environ, start_response):
         return self.app(environ, start_response)
