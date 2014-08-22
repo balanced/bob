@@ -192,3 +192,26 @@ class Builder(object):
             cls.notifiers[key] = fn
             return fn
         return register
+
+
+def create_logger(github_organization, github_repo, commit_hash_or_tag):
+    logger = logging.getLogger(__name__)
+    log_path = os.path.expanduser(
+        '~/logs/{0}/{1}/{0}-{1}-{2}.log'.format(
+            github_organization, github_repo, commit_hash_or_tag
+        )
+    )
+    directory, _ = os.path.split(log_path)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    log_file = logging.FileHandler(log_path)
+    log_format = logging.Formatter(
+        '%(asctime)s : %(levelname)s : %(name)s : %(message)s'
+    )
+    log_file.setFormatter(log_format)
+
+    logger.addHandler(log_file)
+    logger.setLevel(logging.DEBUG)
+
+    return logger

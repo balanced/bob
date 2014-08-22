@@ -59,9 +59,9 @@ def init_config(overrides=None):
 settings = None
 
 
-def init():
+def init(path_to_config=None):
     global settings
-    settings = init_config()
+    settings = init_config(path_to_config)
 
 
 import api

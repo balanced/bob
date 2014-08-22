@@ -124,7 +124,7 @@ def test_travis_payload_parsing(travis_payload_and_result):
     assert result == expected_payload
 
 
-def test_travis_authentication_siging(travis_payload, travis_auth_headers):
+def test_travis_authentication_signing(travis_payload, travis_auth_headers):
     result = api.hooks.forms.travis.WebhookForm(travis_payload)
     assert api.hooks.forms.travis.compute_travis_security(
         travis_auth_headers, result
@@ -147,3 +147,6 @@ def test_queue_submission():
     assert kwargs == message_kwargs
     assert message.id == result
 
+
+def test_logs(web_app):
+    web_app.get('/hooks/logs')

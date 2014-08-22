@@ -5,13 +5,15 @@ import click
 import logging
 import sys
 
-from bob import commands, configure_logging
+from bob import commands, configure_logging, init
 
 
 @click.group()
-@click.option('--logging-conf', default=None)
-def cli(logging_conf):
+@click.option('--logging-conf', default=None, help='Path to logging config.')
+@click.option('--conf', default=None, help='Path to config.')
+def cli(logging_conf, conf):
     configure_logging(logging_conf)
+    init(conf)
 
 
 commands.add_commands(cli)

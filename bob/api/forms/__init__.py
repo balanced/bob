@@ -6,11 +6,16 @@ import os
 import boto
 import boto.sqs
 import boto.sqs.jsonmessage
+import time
 
 import github
 import travis
 
+from bob import builders
 from bob.builders.ubuntu import UbuntuBuilder
+
+
+logger = logging.getLogger(__name__)
 
 
 def queue_build(github_organization, github_repo, commit_hash_or_tag):
@@ -31,30 +36,35 @@ def queue_consume():
     from bob import settings
     conn = boto.sqs.connect_to_region(settings['boto.region'])
     queue = conn.get_queue(settings['bobb.queue'])
-    for msg in queue.get_messages(num_messages=1):
-        kwargs = json.loads(msg.get_body())
-        background_build(**kwargs)
+    while True:
+        # 3600 means we have an hour to build, this should be plenty of time
+        for msg in queue.get_messages(num_messages=1, visibility_timeout=3600):
+            kwargs = json.loads(msg.get_body())
+            logger.debug('got message %s', kwargs)
+            build_logger = builders.create_logger(**kwargs)
+            build(logger=build_logger, **kwargs)
+
+            msg.delete()
+        time.sleep(0)
 
 
-def background_build(github_organization, github_repo, commit_hash_or_tag):
+def build(github_organization, github_repo, commit_hash_or_tag,
+          source=None, logger=None
+):
     from bob import settings
 
-    working_dir = os.path.expanduser(
-        settings.get('bobb.working_dir', '~/work')
-    )
-    output_dir = os.path.expanduser(
-        settings.get('bobb.output_dir', '/opt')
-    )
-    logger = create_logger(
-        github_organization, github_repo, commit_hash_or_tag
-    )
+    working_dir = os.path.expanduser(settings['bobb.work_dir'])
+    output_dir = os.path.expanduser(settings['bobb.out_dir'])
 
     builder = UbuntuBuilder(
         github_repo, working_dir, output_dir, log_stream=logger
     )
-    builder.prepare_workspace(
-        github_organization, github_repo, commit_hash_or_tag
-    )
+
+    if not source:
+        builder.prepare_workspace(
+            github_organization, github_repo, commit_hash_or_tag
+        )
+
     builder.parse_options()
     try:
         builder.prepare_system()
@@ -66,26 +76,3 @@ def background_build(github_organization, github_repo, commit_hash_or_tag):
         builder.notify_failure(commit_hash_or_tag, ex)
     finally:
         builder.log('***finished***')
-
-
-def create_logger(github_organization, github_repo, commit_hash_or_tag):
-    logger = logging.getLogger(__name__)
-    log_path = os.path.expanduser(
-        '~/logs/{0}/{1}/{0}-{1}-{2}.log'.format(
-            github_organization, github_repo, commit_hash_or_tag
-        )
-    )
-    directory, _ = os.path.split(log_path)
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    log_file = logging.FileHandler(log_path)
-    log_format = logging.Formatter(
-        '%(asctime)s : %(levelname)s : %(name)s : %(message)s'
-    )
-    log_file.setFormatter(log_format)
-
-    logger.addHandler(log_file)
-    logger.setLevel(logging.DEBUG)
-
-    return logger

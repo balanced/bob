@@ -20,9 +20,12 @@ class Resource(api.Resource):
 @api.RestController.register('hooks', context=Resource)
 class Controller(api.RestController):
 
-    def index(self):
+    @api.decorators.view_config(name='logs')
+    def logs(self):
+        from bob import settings
+
         def iterate_response():
-            root = os.path.expanduser('~/logs')
+            root = os.path.expanduser(settings['bobb.log_dir'])
             for file_name in list_logs(root):
                 yield str(os.path.relpath(file_name, root))
                 yield str('\n')
@@ -56,19 +59,7 @@ class Controller(api.RestController):
         else:
             response = 'nope nope nope'
 
-        def iterate_response():
-            for lines in response:
-                if isinstance(lines, tuple):
-                    level, lines = lines
-                if not isinstance(lines, list):
-                    lines = [lines]
-                for line in lines:
-                    if not isinstance(line, basestring):
-                        line = unicode(line)
-                    yield str(line.encode('utf-8'))
-                    yield str('\n')
-
-        return api.Response(app_iter=iterate_response())
+        return api.Response(response)
 
 
 def list_logs(path):
