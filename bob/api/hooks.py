@@ -30,7 +30,7 @@ class Controller(api.RestController):
 
     @api.decorators.view_config(name='github', request_method='POST')
     def github(self):
-        result = forms.GithubForm(self.request.json)
+        forms.GithubForm(self.request.json)
         return api.Response('github.created')
 
     @api.decorators.view_config(name='travis', request_method='POST')
@@ -48,7 +48,7 @@ class Controller(api.RestController):
         logger.info(result)
 
         if result['build']:
-            response = forms.build_threaded(
+            response = forms.queue_build(
                 result['organization'], result['name'], result['branch']
             )
         else:

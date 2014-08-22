@@ -4,6 +4,9 @@ import logging
 import os
 import subprocess
 
+import boto
+import boto.sqs
+import boto.sqs.jsonmessage
 import gevent
 import gevent.queue
 
@@ -46,6 +49,29 @@ def build_subprocess(github_organization, github_repo, commit_hash_or_tag):
         yield line
 
 
+def queue_build(github_organization, github_repo, commit_hash_or_tag):
+    from bob import settings
+    conn = boto.sqs.connect_to_region(settings['boto.region'])
+    queue = conn.get_queue(settings['bobb.queue'])
+    message = boto.sqs.jsonmessage.JSONMessage()
+    message.update(**dict(
+        github_organization=github_organization,
+        github_repo=github_repo,
+        commit_hash_or_tag=commit_hash_or_tag
+    ))
+    queue.write(message)
+    return message.id
+
+
+def queue_consume():
+    from bob import settings
+    conn = boto.sqs.connect_to_region(settings['boto.region'])
+    queue = conn.get_queue(settings['bobb.queue'])
+    for msg in queue.get_messages(num_messages=1):
+        kwargs = json.loads(msg.get_body())
+        background_build(**kwargs)
+
+
 def build_threaded(github_organization, github_repo, commit_hash_or_tag):
     task = gevent.spawn(
         background_build, github_organization, github_repo, commit_hash_or_tag,
@@ -59,9 +85,9 @@ def build_threaded(github_organization, github_repo, commit_hash_or_tag):
 
 
 def background_build(github_organization, github_repo, commit_hash_or_tag):
-    from bob.api import settings
+    from bob import settings
+
     # HACK: until we figure out settings.ini
-    settings = settings or {}
     working_dir = os.path.expanduser(settings.get('working_dir', '~/work'))
     output_dir = os.path.expanduser(settings.get('output_dir', '/opt'))
     logger = create_logger(
