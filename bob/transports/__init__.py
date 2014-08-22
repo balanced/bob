@@ -31,6 +31,14 @@ class BotoS3Uploader(Uploader):
 class DepotUploader(Uploader):
 
     def upload(self, path_to_file, **options):
+        from bob import settings
+        env = {}
+        for key, setting in (
+            ('AWS_ACCESS_KEY_ID', 'depot.aws_access_key_id'),
+            ('AWS_SECRET_ACCESS_KEY', 'depot.aws_secret_access_key')
+        ):
+            if setting in settings:
+                env[key] = settings[setting]
         self.builder.run_command(
             '''
             depot -s {destination} -c {codename} -k {gpg_key} \
@@ -39,5 +47,6 @@ class DepotUploader(Uploader):
             '''.format(
                 target=path_to_file,
                 **options
-            )
+            ),
+            env=env
         )
