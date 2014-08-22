@@ -109,7 +109,7 @@ def test_travis_form(build, web_app, travis_payload):
 
 
 def test_github_payload_parsing(github_payload):
-    result = api.hooks.forms.GithubForm(github_payload)
+    result = api.hooks.forms.github.WebhookForm(github_payload)
     assert result == {
         'commit': 'refs/tags/0.0.1',
         'name': 'bob',
@@ -120,12 +120,12 @@ def test_github_payload_parsing(github_payload):
 
 def test_travis_payload_parsing(travis_payload_and_result):
     travis_payload, expected_payload = travis_payload_and_result
-    result = api.hooks.forms.TravisForm(travis_payload)
+    result = api.hooks.forms.travis.WebhookForm(travis_payload)
     assert result == expected_payload
 
 
 def test_travis_authentication_siging(travis_payload, travis_auth_headers):
-    result = api.hooks.forms.TravisForm(travis_payload)
+    result = api.hooks.forms.travis.WebhookForm(travis_payload)
     assert api.hooks.forms.travis.compute_travis_security(
         travis_auth_headers, result
     )

@@ -30,20 +30,22 @@ class Controller(api.RestController):
 
     @api.decorators.view_config(name='github', request_method='POST')
     def github(self):
-        forms.GithubForm(self.request.json)
+        forms.github.WebhookForm(self.request.json)
         return api.Response('github.created')
 
     @api.decorators.view_config(name='travis', request_method='POST')
     def travis(self):
         try:
-            result = forms.TravisForm(self.request.json)
+            result = forms.travis.WebhookForm(self.request.json)
         except ValueError:
             # http://docs.travis-ci.com/user/notifications/
             # Webhooks are delivered with a application/x-www-form-urlencoded
             # content type using HTTP POST, with the body including a payload
             # parameter that contains the JSON webhook payload in a URL-encoded
             # format.
-            result = forms.TravisForm(json.loads(self.request.POST['payload']))
+            result = forms.travis.WebhookForm(
+                json.loads(self.request.POST['payload'])
+            )
 
         logger.info(result)
 

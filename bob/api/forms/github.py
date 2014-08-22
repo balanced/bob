@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import pilo
 
 
-class GithubForm(pilo.Form):
+class WebhookForm(pilo.Form):
 
     commit = pilo.fields.String('ref')
 

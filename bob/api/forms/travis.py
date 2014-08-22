@@ -10,7 +10,7 @@ user_tokens = {
 }
 
 
-class TravisForm(pilo.Form):
+class WebhookForm(pilo.Form):
 
     commit = pilo.fields.String()
 
