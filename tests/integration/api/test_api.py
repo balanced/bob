@@ -143,8 +143,8 @@ def test_queue_submission():
     queue = conn.get_queue.return_value
     args, _ = queue.write.call_args
     message = args[0]
-    _, message_kwargs = message.update.call_args
-    assert kwargs == message_kwargs
+    message_kwargs, _ = message.set_body.call_args
+    assert kwargs == json.loads(message_kwargs[0])
     assert message.id == result
 
 

@@ -5,7 +5,7 @@ import os
 
 import boto
 import boto.sqs
-import boto.sqs.jsonmessage
+import boto.sqs.message
 import time
 
 import github
@@ -22,12 +22,12 @@ def queue_build(github_organization, github_repo, commit_hash_or_tag):
     from bob import settings
     conn = boto.sqs.connect_to_region(settings['boto.region'])
     queue = conn.get_queue(settings['bobb.queue'])
-    message = boto.sqs.jsonmessage.JSONMessage()
-    message.update(**dict(
+    message = boto.sqs.message.RawMessage()
+    message.set_body(json.dumps(dict(
         github_organization=github_organization,
         github_repo=github_repo,
         commit_hash_or_tag=commit_hash_or_tag
-    ))
+    )))
     queue.write(message)
     return message.id
 
