@@ -16,14 +16,16 @@ To build an ubuntu debian from git@github.com://balanced/balanced.git for tag
 
 * wrap in an http api and accept hooks from github and travis
 
-## Configure
+## Configure a project
 
-Bob uses a YAML file inside the project it's building. Here's how it should look
+Bob uses a YAML file (`build.yml`) inside the project it's building. Here's
+how it should look:
 
 ```yaml
 ---
 # which version of the settings to use.
 version: 1
+description: my sexy project
 targets:
   # ubuntu is currently the only target
   ubuntu:
@@ -69,6 +71,19 @@ targets:
         on:
         - success
         - failure
+```
+
+You'll also need to configure travis to call out to bob when it finishes. In
+`.travis.yml`:
+
+```yaml
+notifications:
+  webhooks:
+    urls:
+      - https://builder.vandelay.io/hooks/travis
+    on_success: always
+    on_failure: never
+    on_start: false
 ```
 
 to hack on it:
