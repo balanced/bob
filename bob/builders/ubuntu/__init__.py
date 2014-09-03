@@ -142,6 +142,7 @@ class UbuntuBuilder(Builder, GithubMixin):
             )
         package_command = '''
         fpm -s dir -t deb -n {project_name} -v {version} -x "*.pyc" \
+            --iteration=1 \
             {dependencies} \
             {hooks} {dir_to_package}
         '''.format(
