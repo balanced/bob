@@ -120,7 +120,7 @@ class UbuntuBuilder(Builder, GithubMixin):
             env=self._venv_env
         )
 
-    def package(self, version):
+    def package(self, version, iteration=1):
         super(UbuntuBuilder, self).package(version)
         assert self.configured
         if version[0] == 'v':
@@ -142,7 +142,7 @@ class UbuntuBuilder(Builder, GithubMixin):
             )
         package_command = '''
         fpm -s dir -t deb -n {project_name} -v {version} -x "*.pyc" \
-            --iteration=1 \
+            --iteration={iteration} \
             {dependencies} \
             {hooks} {dir_to_package}
         '''.format(
@@ -150,11 +150,13 @@ class UbuntuBuilder(Builder, GithubMixin):
             dependencies=dependencies,
             hooks=hooks,
             dir_to_package=self.target,
-            version=version
+            version=version,
+            iteration=iteration,
         )
         self.run_command(package_command)
-        return '{project_name}_{version}_{arch}.deb'.format(
+        return '{project_name}_{version}-{iteration}_{arch}.deb'.format(
             project_name=self.project_name,
             version=version,
-            arch='amd64'
+            arch='amd64',
+            iteration=1,
         )
