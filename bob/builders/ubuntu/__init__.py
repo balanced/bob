@@ -72,14 +72,7 @@ class UbuntuBuilder(Builder, GithubMixin):
     @property
     def _venv_env(self):
         env = os.environ.copy()
-        env['PATH'] = '{}/embedded/bin:'.format(self.target) + env['PATH']
-        env['LDFLAGS'] = '-L{0}/embedded/lib -I{0}/embedded/include'.format(
-            self.target
-        )
-        env['CFLAG'] = '-L{0}/embedded/lib -I{0}/embedded/include'.format(
-            self.target
-        )
-        env['LD_RUN_PATH'] = '{}/embedded/lib'.format(self.target)
+        env['PATH'] = '{}/embedded/bin:{}'.format(self.target, env['PATH'])
 
         return env
 
