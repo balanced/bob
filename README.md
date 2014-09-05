@@ -99,3 +99,9 @@ to hack on it:
 ## Run via uwsgi
 
 `bobd -u uwsgi.ini -- --env=BOB_CONF=xxx.ini`
+
+## Manually kicking off a build
+
+```bash
+curl https://builder.vandelay.io/hooks/travis --data-binary  '{"branch": "1.4.14", "commit": "1.4.14", "repository": {"name": "digi", "owner_name": "balanced"}, "result_message": "Passed"}
+```
