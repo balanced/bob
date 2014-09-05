@@ -86,7 +86,7 @@ notifications:
     on_start: false
 ```
 
-to hack on it:
+## Hacking on it
 
 * Clone https://github.com/balanced/bob
 * Clone https://github.com/balanced-cookbooks/ba-bob
