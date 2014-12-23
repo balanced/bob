@@ -95,6 +95,7 @@ class Builder(object):
         for line in result.stdout:
             self.log(line.decode('utf8').replace('\n', '', 1), 'info')
 
+        result.wait()
         if result.returncode:
             raise Exception(
                 'Failed to run command, exited with {}'.format(
