@@ -5,9 +5,9 @@ targets:
     # do not package anything that matches these globs
     exclude:
       # all files that start with *.pyc
-      - ".*\.pyc"
+      - '.*\.pyc'
       # all .git files
-      - ".*\.git*"
+      - '.*\.git*'
     # required to build this project
     build_dependencies:
       - python-dev

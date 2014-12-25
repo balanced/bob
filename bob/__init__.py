@@ -8,7 +8,7 @@ import sys
 import ConfigParser
 
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 logger = logging.getLogger(__name__)
 
