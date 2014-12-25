@@ -4,8 +4,10 @@ targets:
   ubuntu:
     # do not package anything that matches these globs
     exclude:
-      - "*.pyc"
-      - ".git*"
+      # all files that start with *.pyc
+      - ".*\.pyc"
+      # all .git files
+      - ".*\.git*"
     # required to build this project
     build_dependencies:
       - python-dev

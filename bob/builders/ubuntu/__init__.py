@@ -66,7 +66,7 @@ class UbuntuBuilder(Builder, GithubMixin):
     def _prepare_source(self):
         for exclude in self.exclude:
             self.run_command(
-                'find {} -name "{}" -delete'.format(self.source, exclude)
+                'find {} -regex "{}" -delete'.format(self.source, exclude)
             )
 
     @property
