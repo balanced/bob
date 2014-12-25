@@ -50,7 +50,7 @@ def queue_consume():
 
 def build(github_organization, github_repo, commit_hash_or_tag,
           source=None, logger=None
-):
+          ):
     from bob import settings
 
     working_dir = os.path.expanduser(settings['bobb.work_dir'])
